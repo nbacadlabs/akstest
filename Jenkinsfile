@@ -95,7 +95,7 @@ pipeline {
                         ls -R /home/jenkins/agent/workspace/multibranch-sample-app_main
                         find /home/jenkins/agent/workspace/multibranch-sample-app_main -name "01-configmap.yaml"
                         chmod 644 prometheusa/
-                        kubectl apply -f prometheusa/*.yaml
+                        kubectl apply -f prometheusa/
                         kubectl get pods
                         '''
                     }
