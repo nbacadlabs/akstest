@@ -20,6 +20,22 @@ pipeline {
         }
     }
     stages {
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    // Install curl, bash, jq using Alpine's apk package manager
+                    sh '''
+                    apk update
+                    apk add --no-cache curl bash jq
+                    '''
+
+                    // Install Azure CLI (using Alpine's native installation method)
+                    sh '''
+                    curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+                    '''
+                }
+            }
+        }
       stage('Run maven') {
         steps {
         //   container('maven') {
