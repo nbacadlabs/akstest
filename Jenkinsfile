@@ -6,11 +6,6 @@ pipeline {
             kind: Pod
             spec:
               containers:
-              - name: maven
-                image: maven:alpine
-                command:
-                - cat
-                tty: true
               - name: node
                 image: node:16-alpine3.12
                 command:
@@ -21,13 +16,15 @@ pipeline {
     }
 
     stages {
-      stage('Run Node Setup') {
+      stage('Setup and Install Azure CLI') {
         steps {
           container('node') {
-            sh 'apk update'
-            sh 'apk add --no-cache curl bash jq sudo py3-pip'
-            sh 'python3 -m pip install --upgrade pip setuptools wheel'
-            sh 'pip install azure-cli'
+            sh '''
+              apk update
+              apk add --no-cache curl bash jq sudo py3-pip python3-dev gcc musl-dev libffi-dev
+              python3 -m pip install --upgrade pip setuptools wheel
+              pip install azure-cli
+            '''
 
             // Verify Azure CLI installation
             sh 'az version'
