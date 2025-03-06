@@ -89,6 +89,8 @@ pipeline {
                         sh '''
                         az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
                         az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
+                        kubectl apply -f ./prometheusmont/
+                        kubectl get pods
                         '''
                     }
                 }
