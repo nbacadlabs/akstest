@@ -43,7 +43,7 @@ pipeline {
             sh 'apk add --no-cache jq'
             sh 'jq --version'
             sh 'apk add --no-cache bash'
-            sh 'az login'
+            sh 'az account show'
             
             // sh '''
             //   apk add py3-pip
