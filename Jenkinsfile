@@ -42,18 +42,9 @@ pipeline {
             sh 'apk add --no-cache jq'
             sh 'jq --version'
             sh 'apk add --no-cache bash'
+            sh 'az login'
             
             sh '''
-              sudo apt update
-              sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release
-              mkdir -p /etc/apt/keyrings
-              curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/keyrings/microsoft.gpg > /dev/null
-              SUITE=$(lsb_release -cs)
-              echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli/ $SUITE main" |
-              sudo tee /etc/apt/sources.list.d/microsoft.list
-              Package: *
-              Pin: origin https://packages.microsoft.com/repos/azure-cli
-              Pin-Priority: 1
               sudo apt update && \
               sudo apt install -y azure-cli
             '''
