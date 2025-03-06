@@ -52,7 +52,7 @@ pipeline {
             }
             steps {
                 script {
-                    def BRANCH_NAME == 'main' ? "main" : "staging"
+                    def ${BRANCH_NAME} == 'main' ? "main" : "staging"
                     sh "kubectl apply -f ./prometheusmont/"
                 }
             }
@@ -61,7 +61,7 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 script {
-                    def BRANCH_NAME == 'main' ? "default" : "jenkins"
+                    def ${BRANCH_NAME} == 'main' ? "default" : "jenkins"
                     sh "kubectl get pods"
                     sh "kubectl get svc"
                 }
