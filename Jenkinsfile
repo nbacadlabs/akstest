@@ -41,31 +41,32 @@ pipeline {
                         az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
                         az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
                         '''
+                        sh 'echo connected'
                     }
                 }
             }
         }
 
-        stage('Deploy to AKS') {
-            when {
-                expression { env.BRANCH_NAME && env.BRANCH_NAME == 'main' }
-            }
-            steps {
-                script {
-                    def envNamespace = BRANCH_NAME == 'main' ? "main" : "staging"
-                    sh "kubectl apply -f ./prometheusmont/ -n ${envNamespace}"
-                }
-            }
-        }
+        // stage('Deploy to AKS') {
+        //     when {
+        //         expression { env.BRANCH_NAME && env.BRANCH_NAME == 'main' }
+        //     }
+        //     steps {
+        //         script {
+        //             def envNamespace = BRANCH_NAME == 'main' ? "main" : "staging"
+        //             sh "kubectl apply -f ./prometheusmont/ -n ${envNamespace}"
+        //         }
+        //     }
+        // }
 
-        stage('Verify Deployment') {
-            steps {
-                script {
-                    def envNamespace = BRANCH_NAME == 'main' ? "default" : "jenkins"
-                    sh "kubectl get pods -n ${envNamespace}"
-                    sh "kubectl get svc -n ${envNamespace}"
-                }
-            }
-        }
+        // stage('Verify Deployment') {
+        //     steps {
+        //         script {
+        //             def envNamespace = BRANCH_NAME == 'main' ? "default" : "jenkins"
+        //             sh "kubectl get pods -n ${envNamespace}"
+        //             sh "kubectl get svc -n ${envNamespace}"
+        //         }
+        //     }
+        // }
     }
 }
