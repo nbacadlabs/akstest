@@ -8,6 +8,22 @@ pipeline {
     }
 
     stages {
+        stage('Install Azure CLI') {
+            steps {
+                script {
+                    sh '''
+                    if ! command -v az &> /dev/null
+                    then
+                        echo "Azure CLI not found, installing..."
+                        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+                    else
+                        echo "Azure CLI already installed"
+                    fi
+                    '''
+                }
+            }
+        }
+
         stage('Checkout Code') {
             steps {
                 script {
@@ -30,23 +46,13 @@ pipeline {
             }
         }
 
-        // stage('Build & Push Docker Image') {
-        //     steps {
-        //         script {
-        //             sh "az acr login --name $ACR_NAME"
-        //             sh "docker build -t $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG ."
-        //             sh "docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG"
-        //         }
-        //     }
-        // }
-
         stage('Deploy to AKS') {
             when {
-                expression { BRANCH_NAME == 'main' || BRANCH_NAME == '' }
+                expression { env.BRANCH_NAME && env.BRANCH_NAME == 'main' }
             }
             steps {
                 script {
-                    def envNamespace = BRANCH_NAME == 'main' ? "main" : "staging"
+                    def BRANCH_NAME == 'main' ? "main" : "staging"
                     sh "kubectl apply -f ./prometheusmont/"
                 }
             }
@@ -55,8 +61,9 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 script {
-                    sh "kubectl get pods -n ${BRANCH_NAME == 'main' ? 'default' : 'jenkins'}"
-                    sh "kubectl get svc -n ${BRANCH_NAME == 'main' ? 'default' : 'jenkins'}"
+                    def BRANCH_NAME == 'main' ? "default" : "jenkins"
+                    sh "kubectl get pods"
+                    sh "kubectl get svc"
                 }
             }
         }
