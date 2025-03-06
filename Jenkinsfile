@@ -12,7 +12,7 @@ pipeline {
                 - cat
                 tty: true
               - name: node
-                image: mcr.microsoft.com/azure-cli
+                image: node:16-alpine3.12
                 command:
                 - cat
                 tty: true
@@ -46,6 +46,10 @@ pipeline {
             sh 'az login'
             
             sh '''
+              RUN apk add py3-pip
+              RUN apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo make
+              RUN pip install --upgrade pip
+              RUN pip install azure-cli
               sudo apt update && \
               sudo apt install -y azure-cli
             '''
