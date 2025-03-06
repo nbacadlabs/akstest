@@ -50,8 +50,7 @@ pipeline {
             
             sh '''
               apk add py3-pip
-              apk add python3-dev libffi-dev openssl-dev
-              pip install --upgrade pip
+              apk add python3-dev
               pip install azure-cli
             '''
             // sh 'apk add --no-cache apt'
