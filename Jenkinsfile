@@ -38,10 +38,9 @@ pipeline {
                 fi
               done
 
-              # Ensure Cargo is in PATH
+              # Ensure Cargo is installed and in PATH
               export PATH="$HOME/.cargo/bin:$PATH"
 
-              # Check and install Rust and Cargo if missing
               if ! is_installed cargo; then
                 echo "Installing Rust and Cargo..."
                 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -54,10 +53,15 @@ pipeline {
               rustc --version
               cargo --version
 
+              # Ensure pip, setuptools, and wheel are up to date
+              python3 -m pip install --upgrade pip setuptools wheel
+
+              # Install cryptography separately to verify Rust works
+              pip install --no-cache-dir cryptography
+
               # Check and install Azure CLI if missing
               if ! is_installed az; then
                 echo "Azure CLI not found. Installing..."
-                python3 -m pip install --upgrade pip setuptools wheel
                 pip install azure-cli
               else
                 echo "Azure CLI is already installed."
@@ -69,18 +73,5 @@ pipeline {
           }
         }
       }
-      stage('Azure Login') {
-            steps {
-                script {
-                    withCredentials([azureServicePrincipal('azure-credentials')]) {
-                        sh '''
-                        az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
-                        az show account
-                        '''
-                    }
-                }
-            }
-        }
     }
 }
-
