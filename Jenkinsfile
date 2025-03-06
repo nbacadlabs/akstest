@@ -50,7 +50,7 @@ pipeline {
             
             sh '''
               apk add py3-pip
-              apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo make
+              apk add python3-dev libffi-dev openssl-dev
               pip install --upgrade pip
               pip install azure-cli
             '''
