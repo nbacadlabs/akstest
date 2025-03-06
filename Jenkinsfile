@@ -22,15 +22,18 @@ pipeline {
     stages {
       stage('Run maven') {
         steps {
-          container('maven') {
-            sh 'mvn -version'
-            sh 'echo Hello > hello.txt'
-            sh 'ls -last'
-          }
+        //   container('maven') {
+        //     sh 'mvn -version'
+        //     sh 'echo Hello > hello.txt'
+        //     sh 'ls -last'
+        //   }
           container('node') {
             sh 'npm version'
-            sh 'cat hello.txt'
-            sh 'ls -last'
+            // sh 'cat hello.txt'
+            // sh 'ls -last'
+            sh 'apk add --no-cache apt'
+            sh 'apk update'
+            sh 'apk add --no-cache curl bash jq'
             sh 'apk add --no-cache curl'
             sh 'apk add --no-cache sudo'
             sh 'curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"'
@@ -40,7 +43,6 @@ pipeline {
             sh 'apk add --no-cache jq'
             sh 'jq --version'
             sh 'apk add --no-cache bash'
-            sh 'apk add --no-cache apt'
             sh 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
           }
         }
