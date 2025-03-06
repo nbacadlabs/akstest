@@ -21,37 +21,17 @@ pipeline {
     }
 
     stages {
-      stage('Run maven') {
+      stage('Run Node Setup') {
         steps {
-        //   container('maven') {
-        //     sh 'mvn -version'
-        //     sh 'echo Hello > hello.txt'
-        //     sh 'ls -last'
-        //   }
           container('node') {
-            sh 'npm version'
-            // sh 'cat hello.txt'
-            // sh 'ls -last'
             sh 'apk update'
-            sh 'apk add --no-cache curl bash jq'
-            sh 'apk add --no-cache curl'
-            sh 'apk add --no-cache sudo'
-            sh 'curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"'
-            sh 'sudo chmod +x kubectl'
-            sh 'mv kubectl /usr/local/bin/'
-            sh 'kubectl version --client'
-            sh 'apk add --no-cache jq'
-            sh 'jq --version'
-            sh 'apk add --no-cache bash'
+            sh 'apk add --no-cache curl bash jq sudo py3-pip'
+            sh 'python3 -m pip install --upgrade pip setuptools wheel'
+            sh 'pip install azure-cli'
+
+            // Verify Azure CLI installation
+            sh 'az version'
             sh 'az account show'
-            
-            // sh '''
-            //   apk add py3-pip
-            //   apk add python3-dev
-            //   python3 -m pip install --upgrade pip setuptools wheel
-            //   pip install azure-cli
-            // '''
-            // sh 'apk add --no-cache apt'
           }
         }
       }
