@@ -12,7 +12,7 @@ pipeline {
                 - cat
                 tty: true
               - name: node
-                image: node:16-alpine3.12
+                image: mcr.microsoft.com/azure-cli
                 command:
                 - cat
                 tty: true
@@ -21,26 +21,6 @@ pipeline {
     }
     
     stages {
-        stage('Run Azure CLI in Docker') {
-            steps {
-                script {
-                    // Run Azure CLI commands inside the Azure CLI container
-                    docker.image('mcr.microsoft.com/azure-cli').inside {
-                        sh '''
-                        # Login to Azure using Service Principal credentials
-                        az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
-                        
-                        # Get credentials for AKS cluster
-                        az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
-                        
-                        # Run kubectl commands for deployment
-                        kubectl get pods
-                        kubectl get svc
-                        '''
-                    }
-                }
-            }
-      }
       stage('Run maven') {
         steps {
         //   container('maven') {
