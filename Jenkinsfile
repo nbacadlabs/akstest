@@ -47,13 +47,14 @@ pipeline {
             sh 'apk add --no-cache jq'
             sh 'jq --version'
             sh 'apk add --no-cache bash'
+            sh 'az login'
             
-            sh '''
-              apk add py3-pip
-              apk add python3-dev
-              python3 -m pip install --upgrade pip setuptools wheel
-              pip install azure-cli
-            '''
+            // sh '''
+            //   apk add py3-pip
+            //   apk add python3-dev
+            //   python3 -m pip install --upgrade pip setuptools wheel
+            //   pip install azure-cli
+            // '''
             // sh 'apk add --no-cache apt'
           }
         }
