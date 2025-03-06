@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        RESOURCE_GROUP = "your-resource-group"
-        AKS_CLUSTER = "your-aks-cluster"
+        RESOURCE_GROUP = "${env.RESOURCE_GROUP}"
+        AKS_CLUSTER = "${env.CLUSTER_NAME}"
         BRANCH_NAME = "${env.BRANCH_NAME}"
     }
 
@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 script {
-                    echo "Building branch: ${BRANCH_NAME}"
+                    echo "Building branch: ${env.BRANCH_NAME}"
                     checkout scm
                 }
             }
@@ -47,8 +47,7 @@ pipeline {
             steps {
                 script {
                     def envNamespace = BRANCH_NAME == 'main' ? "main" : "staging"
-                    sh "kubectl apply -f k8s/deployment-${envNamespace}.yaml"
-                    sh "kubectl apply -f k8s/service-${envNamespace}.yaml"
+                    sh "kubectl apply -f ./prometheusmont/"
                 }
             }
         }
@@ -56,8 +55,8 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 script {
-                    sh "kubectl get pods -n ${BRANCH_NAME == 'main' ? 'production' : 'staging'}"
-                    sh "kubectl get svc -n ${BRANCH_NAME == 'main' ? 'production' : 'staging'}"
+                    sh "kubectl get pods -n ${BRANCH_NAME == 'main' ? 'default' : 'jenkins'}"
+                    sh "kubectl get svc -n ${BRANCH_NAME == 'main' ? 'default' : 'jenkins'}"
                 }
             }
         }
