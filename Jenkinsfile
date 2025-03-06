@@ -37,7 +37,7 @@ pipeline {
             sh 'sudo chmod +x kubectl'
             sh 'mv kubectl /usr/local/bin/'
             sh 'kubectl version --client'
-            sh 'sudo aptet install jq'
+            sh 'sudo apt install jq'
             sh 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
           }
         }
