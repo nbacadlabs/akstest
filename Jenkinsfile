@@ -27,10 +27,12 @@ pipeline {
             sh '''
               # Update package lists
               apk update
-              
               # Install required dependencies
               apk add --no-cache curl bash jq sudo py3-pip python3-dev gcc musl-dev libffi-dev openssl-dev cargo
-
+              curl -LO "https://dl.k8s.io/release/v1.26.0/bin/linux/amd64/kubectl"
+              chmod +x kubectl
+              mv kubectl /usr/local/bin/
+              kubectl version --client
               # Install Rust and Cargo
               curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
               
@@ -87,8 +89,6 @@ pipeline {
                 script {
                     withCredentials([azureServicePrincipal('Azure_SP_ID')]) {
                         sh '''
-                        apk update
-                        apk add kubectl
                         az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
                         az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
                         kubectl apply -f ./prometheusmont/
