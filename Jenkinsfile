@@ -19,6 +19,10 @@ pipeline {
             '''
         }
     }
+    environment {
+        // Set any environment variables needed, if applicable
+        PYTHON_ENV = 'python3'
+    }
     
     stages {
       stage('Run maven') {
@@ -46,12 +50,10 @@ pipeline {
             sh 'az login'
             
             sh '''
-              RUN apk add py3-pip
-              RUN apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo make
-              RUN pip install --upgrade pip
-              RUN pip install azure-cli
-              sudo apt update && \
-              sudo apt install -y azure-cli
+              apk add py3-pip
+              apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo make
+              pip install --upgrade pip
+              pip install azure-cli
             '''
             // sh 'apk add --no-cache apt'
           }
