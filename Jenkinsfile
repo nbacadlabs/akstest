@@ -39,6 +39,7 @@ pipeline {
             sh 'kubectl version --client'
             sh 'apk add --no-cache jq'
             sh 'jq --version'
+            sh 'apk add --no-cache bash'
             sh 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
           }
         }
