@@ -42,7 +42,7 @@ pipeline {
             sh 'apk add --no-cache jq'
             sh 'jq --version'
             sh 'apk add --no-cache bash'
-            sh 'apk add --no-cache apt'
+            // sh 'apk add --no-cache apt'
             sh 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
           }
         }
