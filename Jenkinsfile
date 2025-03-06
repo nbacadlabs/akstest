@@ -52,8 +52,8 @@ pipeline {
             }
             steps {
                 script {
-                    def ${BRANCH_NAME} == 'main' ? "main" : "staging"
-                    sh "kubectl apply -f ./prometheusmont/"
+                    def envNamespace = BRANCH_NAME == 'main' ? "main" : "staging"
+                    sh "kubectl apply -f ./prometheusmont/ -n ${envNamespace}"
                 }
             }
         }
@@ -61,9 +61,9 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 script {
-                    def ${BRANCH_NAME} == 'main' ? "default" : "jenkins"
-                    sh "kubectl get pods"
-                    sh "kubectl get svc"
+                    def envNamespace = BRANCH_NAME == 'main' ? "default" : "jenkins"
+                    sh "kubectl get pods -n ${envNamespace}"
+                    sh "kubectl get svc -n ${envNamespace}"
                 }
             }
         }
