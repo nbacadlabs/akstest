@@ -19,11 +19,7 @@ pipeline {
             '''
         }
     }
-    environment {
-        // Set any environment variables needed, if applicable
-        PYTHON_ENV = 'python3'
-    }
-    
+
     stages {
       stage('Run maven') {
         steps {
