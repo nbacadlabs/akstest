@@ -42,6 +42,7 @@ pipeline {
             sh 'apk add --no-cache jq'
             sh 'jq --version'
             sh 'apk add --no-cache bash'
+            sh 'apk add --no-cache apt'
             sh '''
                 sudo apt update && apt install -y \
                 curl \
