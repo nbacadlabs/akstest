@@ -1,3 +1,4 @@
+//az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
 pipeline {
     agent {
         kubernetes {
@@ -20,56 +21,29 @@ pipeline {
         steps {
           container('node') {
             sh '''
-              # Function to check if a package is installed
-              is_installed() {
-                command -v "$1" >/dev/null 2>&1
-              }
-
-              echo "Updating package lists..."
+              # Update package lists
               apk update
+              
+              # Install required dependencies
+              apk add --no-cache curl bash jq sudo py3-pip python3-dev gcc musl-dev libffi-dev openssl-dev cargo
 
-              # Install required dependencies only if missing
-              for pkg in curl bash jq sudo py3-pip python3-dev gcc musl-dev libffi-dev openssl-dev cargo; do
-                if ! apk info -e "$pkg" >/dev/null 2>&1; then
-                  echo "Installing missing package: $pkg"
-                  apk add --no-cache "$pkg"
-                else
-                  echo "$pkg is already installed."
-                fi
-              done
-
-              # Ensure Cargo is installed and in PATH
+              # Install Rust and Cargo
+              curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+              
+              # Ensure Cargo is in PATH
               export PATH="$HOME/.cargo/bin:$PATH"
-
-              if ! is_installed cargo; then
-                echo "Installing Rust and Cargo..."
-                curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-                source "$HOME/.cargo/env"
-              else
-                echo "Rust and Cargo are already installed."
-              fi
 
               # Verify Rust and Cargo installation
               rustc --version
               cargo --version
 
-              # Ensure pip, setuptools, and wheel are up to date
+              # Upgrade pip and install Azure CLI
               python3 -m pip install --upgrade pip setuptools wheel
-
-              # Install cryptography separately to verify Rust works
-              pip install --no-cache-dir cryptography
-
-              # Check and install Azure CLI if missing
-              if ! is_installed az; then
-                echo "Azure CLI not found. Installing..."
-                pip install azure-cli
-              else
-                echo "Azure CLI is already installed."
-              fi
-
-              # Verify Azure CLI installation
-              az version
+              pip install azure-cli
             '''
+
+            // Verify Azure CLI installation
+            sh 'az version'
           }
         }
       }
