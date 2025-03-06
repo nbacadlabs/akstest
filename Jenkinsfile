@@ -31,12 +31,13 @@ pipeline {
             sh 'npm version'
             sh 'cat hello.txt'
             sh 'ls -last'
-            sh 'apt install curl'
+            sh 'apk add --no-cache curl'
+            sh 'apk add --no-cache sudo'
             sh 'curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"'
-            sh 'chmod +x kubectl'
+            sh 'sudo chmod +x kubectl'
             sh 'mv kubectl /usr/local/bin/'
             sh 'kubectl version --client'
-            sh 'apt-get install jq'
+            sh 'sudo apt-get install jq'
             sh 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
           }
         }
