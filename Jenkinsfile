@@ -87,6 +87,8 @@ pipeline {
                 script {
                     withCredentials([azureServicePrincipal('Azure_SP_ID')]) {
                         sh '''
+                        apk update
+                        apk add kubectl
                         az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
                         az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
                         kubectl apply -f ./prometheusmont/
