@@ -43,20 +43,28 @@ pipeline {
             '''
             // Verify Azure CLI installation
             sh 'az version'
-          }
-        }
-      }
-      stage('Azure Login') {
-            steps {
-                script {
+            script {
                     withCredentials([azureServicePrincipal('Azure_SP_ID')]) {
                         sh '''
                         az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
                         az account show
                         '''
                     }
-                }
             }
-       }
+          }
+        }
+      }
+    //   stage('Azure Login') {
+    //         steps {
+    //             script {
+    //                 withCredentials([azureServicePrincipal('Azure_SP_ID')]) {
+    //                     sh '''
+    //                     az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+    //                     az account show
+    //                     '''
+    //                 }
+    //             }
+    //         }
+    //    }
     }
 }
