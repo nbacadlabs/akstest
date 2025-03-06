@@ -31,7 +31,6 @@ pipeline {
             sh 'npm version'
             // sh 'cat hello.txt'
             // sh 'ls -last'
-            sh 'apk add --no-cache apt'
             sh 'apk update'
             sh 'apk add --no-cache curl bash jq'
             sh 'apk add --no-cache curl'
@@ -43,6 +42,7 @@ pipeline {
             sh 'apk add --no-cache jq'
             sh 'jq --version'
             sh 'apk add --no-cache bash'
+            sh 'apk add --no-cache apt'
             sh 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
           }
         }
