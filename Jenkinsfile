@@ -20,22 +20,6 @@ pipeline {
         }
     }
     stages {
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    // Install curl, bash, jq using Alpine's apk package manager
-                    sh '''
-                    apk update
-                    apk add --no-cache curl bash jq
-                    '''
-
-                    // Install Azure CLI (using Alpine's native installation method)
-                    sh '''
-                    curl -sL https://aka.ms/InstallAzureCLIDeb | bash
-                    '''
-                }
-            }
-        }
       stage('Run maven') {
         steps {
         //   container('maven') {
@@ -58,10 +42,16 @@ pipeline {
             sh 'apk add --no-cache jq'
             sh 'jq --version'
             sh 'apk add --no-cache bash'
-            // sh 'apk add --no-cache apt'
             sh '''
-                curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+                sudo apt update && apt install -y \
+                curl \
+                jq \
+                lsb-release \
+                apt-transport-https \
+                ca-certificates \
+                && curl -sL https://aka.ms/InstallAzureCLIDeb | bash
             '''
+            // sh 'apk add --no-cache apt'
           }
         }
       }
